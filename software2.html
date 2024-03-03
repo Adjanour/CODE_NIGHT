@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSS Display & Positioning Learning Tool</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+    .container {
+        display: flex;
+        height: 100vh;
+    }
+    .sidebar {
+        width: 250px;
+        background-color: #f0f0f0;
+        padding: 20px;
+    }
+    .content {
+        flex: 1;
+        padding: 20px;
+    }
+    textarea {
+        width: 100%;
+        height: calc(100% - 40px);
+        border: 1px solid #ccc;
+        padding: 10px;
+        box-sizing: border-box;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+    button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+    }
+    button:hover {
+        background-color: #0056b3;
+    }
+    iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="sidebar">
+        <h2>Lessons</h2>
+        <ul id="lesson-list">
+            <li data-html="<div>Hello</div>" data-css="div { color: red; }">Lesson 1: Introduction</li>
+            <li data-html="<button>Click me</button>" data-css="button { background-color: green; color: white; }">Lesson 2: Styling Buttons</li>
+        </ul>
+        <h2>Progress</h2>
+        <p id="progress">0% Complete</p>
+    </div>
+    <div class="content">
+        <h2>HTML</h2>
+        <textarea id="html-editor" placeholder="Enter HTML code here..."></textarea>
+        <h2>CSS</h2>
+        <textarea id="css-editor" placeholder="Enter CSS code here..."></textarea>
+        <button id="check-answer">Check Answer</button>
+        <div id="feedback"></div>
+    </div>
+</div>
+
+<script>
+    const htmlEditor = document.getElementById('html-editor');
+    const cssEditor = document.getElementById('css-editor');
+    const lessonList = document.getElementById('lesson-list');
+    const progressText = document.getElementById('progress');
+    const checkButton = document.getElementById('check-answer');
+    const feedbackDiv = document.getElementById('feedback');
+
+    let currentLesson = 0;
+    let lessonsCompleted = 0;
+
+    function updateProgress() {
+        const percentage = Math.round((lessonsCompleted / lessonList.children.length) * 100);
+        progressText.textContent = `${percentage}% Complete`;
+    }
+
+    function loadLesson(index) {
+        const lesson = lessonList.children[index];
+        htmlEditor.value = lesson.dataset.html;
+        cssEditor.value = lesson.dataset.css;
+    }
+
+    function checkAnswer() {
+        const expectedHTML = lessonList.children[currentLesson].dataset.html;
+        const expectedCSS = lessonList.children[currentLesson].dataset.css;
+
+        if (htmlEditor.value.trim() === expectedHTML.trim() && cssEditor.value.trim() === expectedCSS.trim()) {
+            feedbackDiv.textContent = "Correct! Well done!";
+            lessonsCompleted++;
+            updateProgress();
+        } else {
+            feedbackDiv.textContent = "Incorrect. Please try again.";
+        }
+    }
+
+    lessonList.addEventListener('click', (event) => {
+        const index = Array.from(lessonList.children).indexOf(event.target);
+        if (index !== -1) {
+            currentLesson = index;
+            loadLesson(currentLesson);
+            feedbackDiv.textContent = "";
+        }
+    });
+
+    checkButton.addEventListener('click', checkAnswer);
+
+    // Initial setup
+    updateProgress();
+    loadLesson(currentLesson);
+</script>
+</body>
+</html>
